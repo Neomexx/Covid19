@@ -1,0 +1,9 @@
+<div style="font-size: 18px; margin: 20px;">Confirmed cases by country</div>
+<ul style="text-align: left; font-size: 18px;">
+    {% for item in confirmedCasesByCountry %}
+    <li style="border-bottom: 1px solid #363636; padding: 10px 20px 10px 20px;">
+        <span style="font-weight: bold; color: red;">{{ "{0:,}".format(item[1]).replace(',', ' ') }}</span>
+        <span>{{ item[0] }}</span>
+    </li>
+    {% endfor %}
+</ul>

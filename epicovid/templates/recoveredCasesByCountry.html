@@ -1,0 +1,9 @@
+<ul style="text-align: left; font-size: 18px;">
+    {% for item in recoveredCasesByCountry %}
+    <li style="border-bottom: 1px solid #363636; padding: 10px 20px 10px 20px;">
+        <span style="color: #73b2ff;"><span style="font-weight: bold;">{{ "{0:,}".format(item[1]).replace(',', ' ') }}</span> recovered</span>
+        <br/>
+        <span>{{ item[0] }}</span>
+    </li>
+    {% endfor %}
+</ul>

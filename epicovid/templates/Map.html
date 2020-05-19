@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/themes/light/main.css">
+<script src="https://js.arcgis.com/4.15/"></script>
+<title>ArcGIS JavaScript Tutorials: Create a JavaScript starter app</title>
+<style>
+  html, body, #viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+</style>
+<body>
+  <div id="viewDiv"></div>
+</body>
+<script type="text/javascript">
+require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/Graphic",
+  "esri/layers/GraphicsLayer",
+  "esri/geometry/Point"
+], function(Map, MapView, Graphic, GraphicsLayer) {
+
+  var tab = {{ data.tabConf | tojson }};
+  var maxSize = {{ data.max }};
+  var minSize = {{ data.min }};
+
+  console.log(minSize)
+  console.log(maxSize)
+  
+  
+  var map = new Map({
+      basemap: "dark-gray-vector"
+  });
+
+  
+  var view = new MapView({
+      container: "viewDiv",
+      map: map,
+      center: [0, 0],
+      zoom: 2
+  });
+
+  var graphicsLayer = new GraphicsLayer();
+  
+  for (let i = 0; i < tab.length; i++) {
+
+    map.add(graphicsLayer);
+    
+    var pingSize = tab[i][2] * 40 / maxSize + 3
+
+    var point = {
+      type: "point",
+      longitude: tab[i][1],
+      latitude: tab[i][0]
+    };
+
+  var simpleMarkerSymbol = {
+    type: "simple-marker",
+    color: [230, 14, 14, 0.4],
+    size: pingSize,
+    "outline": {
+      "color": [230, 14, 14, 1],
+      "width": 1,
+    }
+  };
+
+  var pointGraphic = new Graphic({
+    geometry: point,
+    symbol: simpleMarkerSymbol,
+    
+  });
+
+  graphicsLayer.add(pointGraphic);
+  }
+});
+</script>

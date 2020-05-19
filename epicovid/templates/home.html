@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Covid-19 Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/themes/light/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="static/Chart.min.js"></script>
+    <script src="https://js.arcgis.com/4.15/"></script>
+</head>
+
+<body>
+    <!-- <h1 id="title">Covid-19 Dashboard</h1> -->
+
+    <div class="wrapper">
+
+        <div id="container" class="div1">
+            <span style="font-size: 30px;">COVID-19 Dashboard by Axel Arthur Guillaume and Souhib (AAGS) at Epitech Paris University (EPU)</span>
+        </div>
+
+        <div class="div2">
+          <div id="container">
+            <div id="totalConfirmed"></div>
+          </div>
+          <div id="container">
+            <div id="confirmedCasesByCountry" style="height: 635px; overflow-y: auto"></div>
+          </div>
+        </div>
+        
+        <div id="container" class="div3">
+            <div id="viewDiv"></div>
+        </div>
+
+        <div class="div4">
+          <div id="container">
+            <div id="totalDeath"></div>
+          </div>
+          <div id="container">
+            <div id="deathsCasesByCountry" style="height: 200px; overflow-y: auto"></div>
+          </div>
+        </div>
+
+        <div class="div5">
+          <div id="container">
+            <div id="totalRecovered"></div>
+          </div>
+          <div id="container">
+            <div id="recoveredCasesByCountry" style="height: 200px; overflow-y: auto"></div>
+          </div>
+        </div>
+
+        <div id="container" class="div6" style="height: 550px;">
+            <div id="charts"></div>
+        </div>
+
+        <div id="container" class="div7">
+           <span style="font-size: 150%;">Total Region {{data.region}}</span>
+           <br/>
+           <br/>
+           <span style="font-size: 150%;">Last Updated at ({{data.lastUpdate}})</span>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    $(function(){
+        $("#map").load("{{ url_for('main.map') }}");
+        $("#totalConfirmed").load("{{ url_for('main.totalConfirmed') }}");
+        $("#confirmedCasesByCountry").load("{{ url_for('main.confirmedCasesByCountry') }}");
+        $("#totalDeath").load("{{ url_for('main.totalDeaths') }}");
+        $("#deathsCasesByCountry").load("{{ url_for('main.deathsCasesByCountry') }}");
+        $("#totalRecovered").load("{{ url_for('main.totalRecovered') }}");
+        $("#recoveredCasesByCountry").load("{{ url_for('main.recoveredCasesByCountry') }}");
+        $("#charts").load("{{ url_for('main.charts') }}");
+    });
+</script>
+
+<script type="text/javascript">
+require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/Graphic",
+  "esri/layers/GraphicsLayer",
+  "esri/geometry/Point"
+], function(Map, MapView, Graphic, GraphicsLayer) {
+
+  var tab = {{ data.tabConf | tojson }};
+  var maxSize = {{ data.max }};
+  var minSize = {{ data.min }};
+
+  console.log(minSize)
+  console.log(maxSize)
+  
+  
+  var map = new Map({
+      basemap: "dark-gray-vector"
+  });
+
+  
+  var view = new MapView({
+      container: "viewDiv",
+      map: map,
+      center: [0, 0],
+      zoom: 2
+  });
+
+  var graphicsLayer = new GraphicsLayer();
+  
+  for (let i = 0; i < tab.length; i++) {
+
+    map.add(graphicsLayer);
+    
+    var pingSize = tab[i][2] * 40 / maxSize + 3
+
+    var point = {
+      type: "point",
+      longitude: tab[i][1],
+      latitude: tab[i][0]
+    };
+
+  var simpleMarkerSymbol = {
+    type: "simple-marker",
+    color: [230, 14, 14, 0.4],
+    size: pingSize,
+    "outline": {
+      "color": [230, 14, 14, 1],
+      "width": 1,
+    }
+  };
+
+  var pointGraphic = new Graphic({
+    geometry: point,
+    symbol: simpleMarkerSymbol,
+    
+  });
+
+  graphicsLayer.add(pointGraphic);
+  }
+});
+</script>
+
+</html>

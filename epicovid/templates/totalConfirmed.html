@@ -1,0 +1,16 @@
+<div style="padding: 20px;">
+    <p style="font-size: 18px;">Total confirmed</p>
+    <p id="total" style="font-size: 30px; font-weight: bold; color: red;"></p>
+</div>
+
+<script>
+
+    function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+    }
+    var number = formatNumber({{ totalConfirmed }});
+
+    var total = document.getElementById("total");
+    total.innerText = number;
+
+</script>

@@ -1,0 +1,143 @@
+<ul class="tabs" role="tablist">
+    <li>
+        <input type="radio" name="tabs" id="tab1" checked />
+        <label for="tab1" 
+               role="tab" 
+               aria-selected="true" 
+               aria-controls="panel1" 
+               tabindex="0">{{ chartsData.confirmedCases.legend }}</label>
+        <div id="tab-content1" 
+             class="tab-content" 
+             role="tabpanel" 
+             aria-labelledby="description" 
+             aria-hidden="false">
+          <canvas id="myChart1" width="600" height="400"></canvas>
+        </div>
+    </li>
+  
+    <li>
+        <input type="radio" name="tabs" id="tab2" />
+        <label for="tab2"
+               role="tab" 
+               aria-selected="false" 
+               aria-controls="panel2" 
+               tabindex="0">{{ chartsData.deathCount.legend }}</label>
+        <div id="tab-content2" 
+             class="tab-content"
+             role="tabpanel" 
+             aria-labelledby="specification" 
+             aria-hidden="true">
+          <canvas id="myChart2" width="600" height="400"></canvas>
+        </div>
+    </li>
+
+    <li>
+        <input type="radio" name="tabs" id="tab3" />
+        <label for="tab3"
+               role="tab" 
+               aria-selected="false" 
+               aria-controls="panel3" 
+               tabindex="0">{{ chartsData.newCases.legend }}</label>
+        <div id="tab-content3" 
+             class="tab-content"
+             role="tabpanel" 
+             aria-labelledby="specification" 
+             aria-hidden="true">
+          <canvas id="myChart3" width="600" height="400"></canvas>
+        </div>
+    </li>
+</ul>
+
+<script>
+    Chart.defaults.global.responsive = false;
+
+    var myOptions = {
+        legend: {
+            display: false
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    callback: function(value, index, values) {
+                        if (value >= 1e3 && value < 1e6) { return value / 1e3 + 'k'; }
+                        else if (value >= 1e6 && value < 1e9) { return value / 1e6 + 'M'; }
+                        else { return value; }
+                    }
+                }
+            }],
+            xAxes: [{
+                type: 'time',
+                position: 'bottom',
+                time: {
+                    displayFormats: {'day': 'MM'},
+                    tooltipFormat: 'DD/MM/YY',
+                    unit: 'month',
+                }
+            }],
+        }
+    };
+    
+    var ctx = document.getElementById("myChart1").getContext("2d");
+    var myChart1 = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            labels: [
+                {% for item in chartsData.confirmedCases.labels %}
+                    "{{ item.month }}/{{ item.day }}/{{ item.year }}",
+                {% endfor %}],
+            datasets: [{
+                label: '{{ chartsData.confirmedCases.legend }}',
+                data: [
+                    {% for item in chartsData.confirmedCases.values %}
+                        {{ item }},
+                    {% endfor %}
+                ],
+                pointBackgroundColor: "#fb0"
+            }]
+        },
+        options: myOptions
+    });
+
+    var ctx2 = document.getElementById("myChart2").getContext("2d");
+    var myChart2 = new Chart(ctx2, {
+        type: 'scatter',
+        data: {
+            labels: [
+                {% for item in chartsData.deathCount.labels %}
+                    "{{ item.month }}/{{ item.day }}/{{ item.year }}",
+                {% endfor %}],
+            datasets: [{
+                label: '{{ chartsData.deathCount.legend }}',
+                data: [
+                    {% for item in chartsData.deathCount.values %}
+                        {{ item }},
+                    {% endfor %}
+                ],
+                pointBackgroundColor: "#fb0"
+            }]
+        },
+        options: myOptions
+    });
+
+    var ctx3 = document.getElementById("myChart3").getContext("2d");
+    var myChart3 = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: [
+                {% for item in chartsData.newCases.labels %}
+                    "{{ item.month }}/{{ item.day }}/{{ item.year }}",
+                {% endfor %}],
+            datasets: [{
+                label: '{{ chartsData.newCases.legend }}',
+                data: [
+                    {% for item in chartsData.newCases.values %}
+                        {{ item }},
+                    {% endfor %}
+                ],
+                backgroundColor: "#fb0"
+            }]
+        },
+        options: myOptions
+    });
+
+</script>

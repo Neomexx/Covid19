@@ -1,0 +1,16 @@
+<div style="padding: 20px;">
+    <p style="font-size: 18px;">Total recovered</p>
+    <p id="total3" style="font-size: 30px; font-weight: bold; color: #73b2ff;"></p>
+</div>
+
+<script>
+
+    function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+    }
+    var number = formatNumber({{ totalRecovered }});
+
+    var total3 = document.getElementById("total3");
+    total3.innerText = number;
+
+</script>
